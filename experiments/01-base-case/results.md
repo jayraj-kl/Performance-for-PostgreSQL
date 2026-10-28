@@ -75,13 +75,13 @@ tps = 411.721007 (without initial connection time)
 
 ### Performance Summary
 
-| Metric                     | Value      | Status          |
-| -------------------------- | ---------- | --------------- |
-| **Total Transactions**     | 200,000    | ✅ 100% Success |
-| **Failed Transactions**    | 0 (0.000%) | ✅ Perfect      |
-| **Average Latency**        | 48.577 ms  | ⚡ Good         |
-| **Connection Time**        | 328.852 ms | 🔌 Acceptable   |
-| **TPS (Transactions/sec)** | **411.72** | 🚀 **Baseline** |
+| Metric                     | Value      | Status       |
+| -------------------------- | ---------- | ------------ |
+| **Total Transactions**     | 200,000    | 100% Success |
+| **Failed Transactions**    | 0 (0.000%) | Perfect      |
+| **Average Latency**        | 48.577 ms  | Good         |
+| **Connection Time**        | 328.852 ms | Acceptable   |
+| **TPS (Transactions/sec)** | **411.72** | **Baseline** |
 
 ---
 
@@ -89,7 +89,7 @@ tps = 411.721007 (without initial connection time)
 
 ### Progressive Database Statistics
 
-#### 📊 Measurement 1 (Initial)
+#### Measurement 1 (Initial)
 
 ```
  datname  | blks_read | blks_hit | tup_returned | tup_fetched | tup_inserted | tup_updated | tup_deleted
@@ -97,7 +97,7 @@ tps = 411.721007 (without initial connection time)
  BaseCase |    216989 |   596776 |     11750062 |       59870 |     10016227 |       45432 |          13
 ```
 
-#### 📊 Measurement 2 (Mid-test)
+#### Measurement 2 (Mid-test)
 
 ```
  datname  | blks_read | blks_hit | tup_returned | tup_fetched | tup_inserted | tup_updated | tup_deleted
@@ -105,7 +105,7 @@ tps = 411.721007 (without initial connection time)
  BaseCase |    239989 |  1059136 |     13630598 |      117103 |     10034276 |       99618 |          13
 ```
 
-#### 📊 Measurement 3 (Final)
+#### Measurement 3 (Final)
 
 ```
  datname  | blks_read | blks_hit | tup_returned | tup_fetched | tup_inserted | tup_updated | tup_deleted
@@ -128,21 +128,21 @@ tps = 411.721007 (without initial connection time)
 
 ## Key Performance Insights
 
-### ✅ **Positive Indicators**
+### **Positive Indicators**
 
 - **100% Success Rate:** Zero failed transactions throughout the test
 - **Cache Efficiency:** Block hit ratio improved dramatically (8.4x increase)
 - **Stable Performance:** Consistent latency and throughput
 - **Scalable Setup:** 30-second initialization for substantial dataset
 
-### 📊 **Performance Characteristics**
+### **Performance Characteristics**
 
 - **Cache Warming:** Buffer hit ratio increases significantly over time
 - **Write Intensive:** High update activity (12x growth) indicates TPC-B workload
 - **Memory Efficiency:** Growing cache hits show effective buffer management
 - **Connection Overhead:** 329ms initial connection time is acceptable
 
-### 🎯 **Baseline Establishment**
+### **Baseline Establishment**
 
 - **TPS Baseline:** 411.72 transactions/second
 - **Latency Baseline:** 48.577ms average
@@ -153,14 +153,14 @@ tps = 411.721007 (without initial connection time)
 
 ## Setup Insights
 
-### 📈 **Data Generation Analysis**
+### **Data Generation Analysis**
 
 - **Time Distribution:** 89% of setup time spent on data generation
 - **Scaling Factor 100:** Creates substantial test dataset (10M accounts)
 - **Primary Key Creation:** 10% of total setup time
 - **Efficient Process:** Well-optimized initialization sequence
 
-### 🔧 **Configuration Notes**
+### **Configuration Notes**
 
 - **Scaling Factor:** 100 provides good balance of data size vs. setup time
 - **Client Configuration:** 20 clients, 5 threads optimal for this workload

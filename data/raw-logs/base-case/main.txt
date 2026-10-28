@@ -1,0 +1,45 @@
+# Base Case Setup - PostgreSQL Performance Testing
+
+## Database Connection
+```bash
+psql -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com -p 5432 -U postgres -d BaseCase
+```
+
+## Initial Database Setup
+
+### pgbench Initialization
+**Command:**
+```bash
+pgbench -i -s 100 -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com -p 5432 -U postgres -d BaseCase
+```
+*Note: Equivalent to `pgbench -i -s 100 mydatabase`*
+
+### Setup Results
+```
+dropping old tables...
+NOTICE:  table "pgbench_accounts" does not exist, skipping
+NOTICE:  table "pgbench_branches" does not exist, skipping
+NOTICE:  table "pgbench_history" does not exist, skipping
+NOTICE:  table "pgbench_tellers" does not exist, skipping
+creating tables...
+generating data (client-side)...
+vacuuming...
+creating primary keys...
+done in 30.08 s (drop tables 0.01 s, create tables 0.03 s, client-side generate 26.79 s, vacuum 0.27 s, primary keys 2.98 s).
+```
+
+### Performance Breakdown
+| Phase | Duration | Percentage |
+|-------|----------|------------|
+| **Drop tables** | 0.01s | 0.03% |
+| **Create tables** | 0.03s | 0.10% |
+| **Generate data** | 26.79s | 89.06% |
+| **Vacuum** | 0.27s | 0.90% |
+| **Primary keys** | 2.98s | 9.91% |
+| **Total** | **30.08s** | **100%** |
+
+**📊 Key Insights:**
+- Data generation dominates setup time (89%)
+- Primary key creation is the second largest bottleneck (10%)
+- Scaling factor 100 creates substantial test dataset
+

@@ -46,13 +46,13 @@ tps = 121.437638 (without initial connection time)
 
 ### Performance Summary
 
-| Metric                  | Value      | Status                  |
-| ----------------------- | ---------- | ----------------------- |
-| **Total Transactions**  | 100,000    | ✅ 100% Success         |
-| **Failed Transactions** | 0 (0.000%) | ✅ Perfect              |
-| **Average Latency**     | 823.214 ms | ⚡ Good                 |
-| **Connection Time**     | 118.670 ms | 🔌 Excellent            |
-| **TPS**                 | **121.44** | 🚀 **High Performance** |
+| Metric                  | Value      | Status               |
+| ----------------------- | ---------- | -------------------- |
+| **Total Transactions**  | 100,000    | 100% Success         |
+| **Failed Transactions** | 0 (0.000%) | Perfect              |
+| **Average Latency**     | 823.214 ms | Good                 |
+| **Connection Time**     | 118.670 ms | Excellent            |
+| **TPS**                 | **121.44** | **High Performance** |
 
 ---
 
@@ -89,13 +89,13 @@ tps = 84.047798 (without initial connection time)
 
 ### Performance Summary
 
-| Metric                  | Value        | Status                      |
-| ----------------------- | ------------ | --------------------------- |
-| **Total Transactions**  | 100,000      | ✅ 100% Success             |
-| **Failed Transactions** | 0 (0.000%)   | ✅ Perfect                  |
-| **Average Latency**     | 1,189.799 ms | ⚡ Acceptable               |
-| **Connection Time**     | 1,022.557 ms | 🔌 High                     |
-| **TPS**                 | **84.05**    | 🚀 **Moderate Performance** |
+| Metric                  | Value        | Status                   |
+| ----------------------- | ------------ | ------------------------ |
+| **Total Transactions**  | 100,000      | 100% Success             |
+| **Failed Transactions** | 0 (0.000%)   | Perfect                  |
+| **Average Latency**     | 1,189.799 ms | Acceptable               |
+| **Connection Time**     | 1,022.557 ms | High                     |
+| **TPS**                 | **84.05**    | **Moderate Performance** |
 
 ---
 
@@ -130,20 +130,20 @@ Direct Pool: ██████████████████████�
 
 ## Key Performance Insights
 
-### ✅ **Proxy Connection Pool Advantages**
+### **Proxy Connection Pool Advantages**
 
 - **Superior Throughput:** 44.5% higher TPS (121.44 vs 84.05)
 - **Lower Latency:** 30.8% reduction in average response time
 - **Faster Connections:** 88.4% reduction in connection establishment time
 - **Consistent Performance:** Stable performance under high concurrency
 
-### 📊 **Connection Overhead Analysis**
+### **Connection Overhead Analysis**
 
 - **Proxy Pool:** 119ms connection time shows efficient connection reuse
 - **Direct Pool:** 1,023ms connection time indicates connection establishment bottleneck
 - **Impact Factor:** Connection overhead represents 8.6x difference between approaches
 
-### 🎯 **Workload Characteristics**
+### **Workload Characteristics**
 
 - **High Concurrency:** 100 concurrent clients stress-test connection handling
 - **Transaction Volume:** 100,000 transactions provide statistical significance
@@ -172,14 +172,14 @@ Direct Pool: ██████████████████████�
 
 ## Production Recommendations
 
-### 🚀 **Connection Pooling Strategy**
+### **Connection Pooling Strategy**
 
 - **Primary Choice:** Use proxy connection pooling for production workloads
 - **Performance Gain:** Expect 40-50% improvement in high-concurrency scenarios
 - **Connection Management:** Implement proper pool sizing and configuration
 - **Monitoring:** Track connection pool metrics and utilization
 
-### 📈 **Scaling Guidelines**
+### **Scaling Guidelines**
 
 | Scenario                           | Recommended Approach | Expected Benefit          |
 | ---------------------------------- | -------------------- | ------------------------- |
@@ -188,11 +188,11 @@ Direct Pool: ██████████████████████�
 | **Low Load (<10 clients)**         | Either approach      | Minimal difference        |
 | **Burst Traffic**                  | Proxy Pool           | Better handling of spikes |
 
-### 🔧 **Implementation Considerations**
+### **Implementation Considerations**
 
 - **Pool Configuration:** Size pools based on expected concurrent load
 - **Health Monitoring:** Implement connection health checks
 - **Failover Strategy:** Design redundancy for connection pool failures
 - **Performance Testing:** Validate configuration under realistic workloads
 
-**🏆 Conclusion:** Proxy connection pooling provides significant performance advantages, especially in high-concurrency scenarios, making it the preferred choice for production PostgreSQL deployments.
+**Conclusion:** Proxy connection pooling provides significant performance advantages, especially in high-concurrency scenarios, making it the preferred choice for production PostgreSQL deployments.

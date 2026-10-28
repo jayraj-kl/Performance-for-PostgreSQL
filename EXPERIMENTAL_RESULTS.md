@@ -39,8 +39,8 @@ pgbench -i -s 100 -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com -p 543
 
 **Setup Results:**
 
-- ✅ Tables created successfully
-- ⏱️ Total time: 30.08 seconds
+- Tables created successfully
+- Total time: 30.08 seconds
   - Drop tables: 0.01s
   - Create tables: 0.03s
   - Client-side generate: 26.79s
@@ -56,15 +56,15 @@ pgbench -c 20 -j 5 -t 10000 -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.
 
 **Results:**
 | Metric | Value |
-|--------|-------|
-| 🧵 Clients | 20 |
-| 🔄 Threads | 5 |
-| 📊 Transactions per client | 10,000 |
-| ✅ Total transactions processed | 200,000/200,000 |
-| ❌ Failed transactions | 0 (0.000%) |
-| ⚡ Average latency | 48.577 ms |
-| 🔌 Initial connection time | 328.852 ms |
-| 🚀 **TPS (Transactions Per Second)** | **411.72** |
+| --------------------------------- | --------------- |
+| Clients | 20 |
+| Threads | 5 |
+| Transactions per client | 10,000 |
+| Total transactions processed | 200,000/200,000 |
+| Failed transactions | 0 (0.000%) |
+| Average latency | 48.577 ms |
+| Initial connection time | 328.852 ms |
+| **TPS (Transactions Per Second)** | **411.72** |
 
 ### Database Statistics Progression
 
@@ -104,7 +104,7 @@ pgbench -c 20 -j 5 -t 10000 -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.
 | Tuples Updated  | 600,796    |
 | Tuples Deleted  | 13         |
 
-**📈 Key Observations:**
+**Key Observations:**
 
 - Cache hit ratio improved significantly over time
 - Block hits increased from ~597K to ~5M (8.4x improvement)
@@ -139,9 +139,9 @@ CREATE INDEX idx_accounts_aid ON pgbench_accounts (aid);
 EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 ```
 
-- 📊 Cost: 0.43..8.45
-- ⏱️ Execution Time: 0.058 ms
-- 🔍 Method: Index Scan using pgbench_accounts_pkey
+- Cost: 0.43..8.45
+- Execution Time: 0.058 ms
+- Method: Index Scan using pgbench_accounts_pkey
 
 **With Custom Index:**
 
@@ -149,10 +149,10 @@ EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 ```
 
-- 📊 Cost: 0.43..8.45
-- ⏱️ Execution Time: 0.039 ms
-- 🔍 Method: Index Scan using idx_accounts_aid
-- 📈 **33% faster than primary key**
+- Cost: 0.43..8.45
+- Execution Time: 0.039 ms
+- Method: Index Scan using idx_accounts_aid
+- **33% faster than primary key**
 
 #### Range Scans (abalance = 0)
 
@@ -160,20 +160,20 @@ EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE abalance = 0;
 ```
 
-- 📊 Cost: 0.00..290,851.00
-- ⏱️ Execution Time: 3,737.067 ms
-- 🔍 Method: Sequential Scan
-- 📋 Rows: 9,801,937 returned, 198,063 filtered
-- 💾 Buffers: 117,806 hit, 48,045 read
-- ⚠️ **No index available - requires full table scan**
+- Cost: 0.00..290,851.00
+- Execution Time: 3,737.067 ms
+- Method: Sequential Scan
+- Rows: 9,801,937 returned, 198,063 filtered
+- Buffers: 117,806 hit, 48,045 read
+- **No index available - requires full table scan**
 
 ### Index Performance Analysis
 
 | Query Type            | Method     | Execution Time | Buffer Reads      | Efficiency |
 | --------------------- | ---------- | -------------- | ----------------- | ---------- |
-| Point Lookup (PK)     | Index Scan | 0.058 ms       | -                 | ⭐⭐⭐⭐⭐ |
-| Point Lookup (Custom) | Index Scan | 0.039 ms       | 4 (3 read, 1 hit) | ⭐⭐⭐⭐⭐ |
-| Range Scan (No Index) | Seq Scan   | 3,737 ms       | 165,851           | ⭐         |
+| Point Lookup (PK)     | Index Scan | 0.058 ms       | -                 | 5/5        |
+| Point Lookup (Custom) | Index Scan | 0.039 ms       | 4 (3 read, 1 hit) | 5/5        |
+| Range Scan (No Index) | Seq Scan   | 3,737 ms       | 165,851           | 1/5        |
 
 ---
 
@@ -190,10 +190,10 @@ SELECT pg_reload_conf();
 
 The `pg_stat_statements` extension tracks execution statistics for all SQL statements, providing insights into:
 
-- 📊 Query execution frequency (calls)
-- ⏱️ Cumulative execution time (total_exec_time)
-- 📋 Rows returned
-- 💾 Buffer cache hit percentage
+- Query execution frequency (calls)
+- Cumulative execution time (total_exec_time)
+- Rows returned
+- Buffer cache hit percentage
 
 ### Detailed Query Execution Plan
 
@@ -203,13 +203,13 @@ EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE aid = 12
 
 **Results:**
 
-- 📊 Cost: 0.43..8.45
-- ⏱️ Planning Time: 0.146 ms
-- ⏱️ Execution Time: 0.030 ms
-- 💾 Buffers: 1 hit, 3 read
-- 🔍 Method: Index Scan using idx_accounts_aid
+- Cost: 0.43..8.45
+- Planning Time: 0.146 ms
+- Execution Time: 0.030 ms
+- Buffers: 1 hit, 3 read
+- Method: Index Scan using idx_accounts_aid
 
-**💡 Optimization Insight:**
+**Optimization Insight:**
 This analysis helps identify resource-intensive queries and focus optimization efforts where they'll have the most impact.
 
 ---
@@ -224,15 +224,15 @@ pgbench -h connection-pool-proxy.proxy-cxa0i80mysid.ap-south-1.rds.amazonaws.com
 
 **Results:**
 | Metric | Value |
-|--------|-------|
-| 🧵 Clients | 100 |
-| 🔄 Threads | 20 |
-| 📊 Transactions per client | 1,000 |
-| ✅ Total transactions | 100,000/100,000 |
-| ❌ Failed transactions | 0 (0.000%) |
-| ⚡ Average latency | 823.214 ms |
-| 🔌 Initial connection time | 118.670 ms |
-| 🚀 **TPS** | **121.44** |
+| ----------------------- | --------------- |
+| Clients | 100 |
+| Threads | 20 |
+| Transactions per client | 1,000 |
+| Total transactions | 100,000/100,000 |
+| Failed transactions | 0 (0.000%) |
+| Average latency | 823.214 ms |
+| Initial connection time | 118.670 ms |
+| **TPS** | **121.44** |
 
 ### Test Configuration 2: Direct Connection Pool
 
@@ -242,24 +242,24 @@ pgbench -h database-connection-pool.cxa0i80mysid.ap-south-1.rds.amazonaws.com -U
 
 **Results:**
 | Metric | Value |
-|--------|-------|
-| 🧵 Clients | 100 |
-| 🔄 Threads | 20 |
-| 📊 Transactions per client | 1,000 |
-| ✅ Total transactions | 100,000/100,000 |
-| ❌ Failed transactions | 0 (0.000%) |
-| ⚡ Average latency | 1,189.799 ms |
-| 🔌 Initial connection time | 1,022.557 ms |
-| 🚀 **TPS** | **84.05** |
+| ----------------------- | --------------- |
+| Clients | 100 |
+| Threads | 20 |
+| Transactions per client | 1,000 |
+| Total transactions | 100,000/100,000 |
+| Failed transactions | 0 (0.000%) |
+| Average latency | 1,189.799 ms |
+| Initial connection time | 1,022.557 ms |
+| **TPS** | **84.05** |
 
 ### Connection Pooling Comparison
 
 | Configuration | TPS    | Avg Latency | Connection Time | Performance |
 | ------------- | ------ | ----------- | --------------- | ----------- |
-| Proxy Pool    | 121.44 | 823 ms      | 119 ms          | ⭐⭐⭐⭐    |
-| Direct Pool   | 84.05  | 1,190 ms    | 1,023 ms        | ⭐⭐⭐      |
+| Proxy Pool    | 121.44 | 823 ms      | 119 ms          | 4/5         |
+| Direct Pool   | 84.05  | 1,190 ms    | 1,023 ms        | 3/5         |
 
-**📊 Key Insights:**
+**Key Insights:**
 
 - Proxy connection pool shows 44% better throughput
 - Direct pool has 44% higher latency
@@ -354,11 +354,11 @@ SELECT * FROM large_events
 WHERE event_time BETWEEN '2023-02-01' AND '2023-02-28';
 ```
 
-- 📊 Cost: 1000.00..22,247.91
-- ⏱️ Execution Time: 34.227 ms
-- 🔍 Method: Parallel Seq Scan (3 workers)
-- 📋 Rows: 38,881 returned, 337,440 filtered
-- 💾 Buffers: 10,838 shared hits
+- Cost: 1000.00..22,247.91
+- Execution Time: 34.227 ms
+- Method: Parallel Seq Scan (3 workers)
+- Rows: 38,881 returned, 337,440 filtered
+- Buffers: 10,838 shared hits
 
 **Partitioned Table:**
 
@@ -368,12 +368,12 @@ SELECT * FROM partitioned_events
 WHERE event_time BETWEEN '2023-02-01' AND '2023-02-28';
 ```
 
-- 📊 Cost: 0.00..21.25
-- ⏱️ Execution Time: 0.021 ms
-- 🔍 Method: Seq Scan on partitioned_events_2023_q1
-- 📋 Rows: 1 returned
-- 💾 Buffers: 1 shared hit
-- 🚀 **1,630x faster than non-partitioned**
+- Cost: 0.00..21.25
+- Execution Time: 0.021 ms
+- Method: Seq Scan on partitioned_events_2023_q1
+- Rows: 1 returned
+- Buffers: 1 shared hit
+- **1,630x faster than non-partitioned**
 
 #### Event Type Query
 
@@ -385,11 +385,11 @@ SELECT * FROM partitioned_events
 WHERE event_type = 'purchase';
 ```
 
-- 📊 Cost: 0.00..58.19
-- ⏱️ Execution Time: 0.042 ms
-- 🔍 Method: Append (scans all partitions)
-- 📋 Rows: 0 returned, 1 filtered
-- 💾 Buffers: 1 shared hit
+- Cost: 0.00..58.19
+- Execution Time: 0.042 ms
+- Method: Append (scans all partitions)
+- Rows: 0 returned, 1 filtered
+- Buffers: 1 shared hit
 
 ### Partitioning Performance Summary
 
@@ -398,7 +398,7 @@ WHERE event_type = 'purchase';
 | Date Range      | 34.227 ms       | 0.021 ms    | **1,630x faster**              |
 | Cross-partition | N/A             | 0.042 ms    | Efficient multi-partition scan |
 
-**🎯 Key Benefits:**
+**Key Benefits:**
 
 - Partition pruning eliminates unnecessary data scans
 - Massive performance improvement for time-based queries
@@ -426,40 +426,32 @@ pgbench -i -s 100 -h database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com -p 543
 
 ### Performance Results Overview
 
-| Strategy               | Key Metric          | Improvement           | Recommendation                      |
-| ---------------------- | ------------------- | --------------------- | ----------------------------------- |
-| **Base Case**          | 411.72 TPS          | Baseline              | ✅ Good baseline performance        |
-| **Indexing**           | 33% faster queries  | Point lookups         | ⭐ Essential for query optimization |
-| **Connection Pooling** | 121.44 vs 84.05 TPS | 44% better with proxy | ⭐ Use proxy pooling                |
-| **Partitioning**       | 1,630x faster       | Date range queries    | ⭐⭐⭐ Critical for large datasets  |
+| Strategy               | Key Metric          | Improvement           | Recommendation                   |
+| ---------------------- | ------------------- | --------------------- | -------------------------------- |
+| **Base Case**          | 411.72 TPS          | Baseline              | Good baseline performance        |
+| **Indexing**           | 33% faster queries  | Point lookups         | Essential for query optimization |
+| **Connection Pooling** | 121.44 vs 84.05 TPS | 44% better with proxy | Use proxy pooling                |
+| **Partitioning**       | 1,630x faster       | Date range queries    | Critical for large datasets      |
 
 ### Best Practices Identified
 
-#### 🎯 High Impact Optimizations
+#### High Impact Optimizations
 
 1. **Partitioning** - Massive improvement for time-series data
 2. **Indexing** - Essential for point lookups and range queries
 3. **Connection Pooling** - Significant throughput improvement
 
-#### 📊 Monitoring Recommendations
+#### Monitoring Recommendations
 
 1. Enable `pg_stat_statements` for query analysis
 2. Set `log_min_duration_statement = 1000` for slow query logging
 3. Monitor cache hit ratios and buffer usage
 
-#### 🚀 Scaling Strategies
+#### Scaling Strategies
 
 1. Use read replicas for read-heavy workloads
 2. Implement appropriate partitioning strategy based on query patterns
 3. Optimize connection pooling configuration for workload characteristics
-
-### Next Steps
-
-- [ ] Implement partitioning for time-series tables
-- [ ] Create indexes for frequently queried columns
-- [ ] Configure connection pooling with proxy setup
-- [ ] Set up monitoring and alerting for key metrics
-- [ ] Conduct load testing with production-like workloads
 
 ---
 

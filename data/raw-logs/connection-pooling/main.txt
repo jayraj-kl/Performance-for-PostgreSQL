@@ -1,0 +1,75 @@
+# Connection Pooling Performance Tests
+
+## Test 1: Proxy Connection Pool
+**Command:**
+```bash
+pgbench -h connection-pool-proxy.proxy-cxa0i80mysid.ap-south-1.rds.amazonaws.com -U postgres -d ConnectionPool -c 50 -j 10 -t 100
+```
+
+**Results:**
+```
+pgbench (17.4)
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 20
+maximum number of tries: 1
+number of transactions per client: 1000
+number of transactions actually processed: 100000/100000
+number of failed transactions: 0 (0.000%)
+latency average = 823.214 ms
+initial connection time = 118.670 ms
+tps = 121.437638 (without initial connection time)
+```
+
+**Performance Summary:**
+- ✅ **TPS:** 121.44
+- ⚡ **Avg Latency:** 823.214 ms
+- 🔌 **Connection Time:** 118.670 ms
+- 📊 **Success Rate:** 100%
+
+---
+
+## Test 2: Direct Connection Pool
+**Command:**
+```bash
+pgbench -h database-connection-pool.cxa0i80mysid.ap-south-1.rds.amazonaws.com -U postgres -d ConnectionPool -c 100 -j 20 -t 1000
+```
+
+**Results:**
+```
+pgbench (17.4)
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 20
+maximum number of tries: 1
+number of transactions per client: 1000
+number of transactions actually processed: 100000/100000
+number of failed transactions: 0 (0.000%)
+latency average = 1189.799 ms
+initial connection time = 1022.557 ms
+tps = 84.047798 (without initial connection time)
+```
+
+**Performance Summary:**
+- ✅ **TPS:** 84.05
+- ⚡ **Avg Latency:** 1,189.799 ms
+- 🔌 **Connection Time:** 1,022.557 ms
+- 📊 **Success Rate:** 100%
+
+---
+
+## Comparison Analysis
+
+| Metric | Proxy Pool | Direct Pool | Difference |
+|--------|------------|-------------|------------|
+| **TPS** | 121.44 | 84.05 | +44.5% |
+| **Latency** | 823 ms | 1,190 ms | +44.6% |
+| **Connection Time** | 119 ms | 1,023 ms | +760% |
+
+**🎯 Conclusion:** Proxy connection pooling significantly outperforms direct connection pooling with 44% better throughput and much lower connection overhead.

@@ -36,7 +36,7 @@ SELECT
     ('{"user_id": ' || (random() * 10000)::int || '}')::jsonb;
 ```
 
-✅ **Result:** `INSERT 0 1051201` (1.05M records spanning 2 years)
+**Result:** `INSERT 0 1051201` (1.05M records spanning 2 years)
 
 ---
 
@@ -70,7 +70,7 @@ INSERT INTO partitioned_events (event_time, event_type, data)
 VALUES ('2023-02-15', 'login', '{"user_id": 123}');
 ```
 
-✅ **Result:** `INSERT 0 1`
+**Result:** `INSERT 0 1`
 
 ---
 
@@ -151,11 +151,11 @@ WHERE event_time BETWEEN '2023-02-01' AND '2023-02-28';
 
 **Performance Summary:**
 
-- 📊 **Cost:** 1000.00..22,247.91
-- ⏱️ **Execution Time:** 34.227 ms
-- 🔍 **Method:** Parallel Sequential Scan (3 workers)
-- 📋 **Efficiency:** 38,881 rows returned, 337,440 filtered out
-- 💾 **Buffer Usage:** 10,838 shared hits
+- **Cost:** 1000.00..22,247.91
+- **Execution Time:** 34.227 ms
+- **Method:** Parallel Sequential Scan (3 workers)
+- **Efficiency:** 38,881 rows returned, 337,440 filtered out
+- **Buffer Usage:** 10,838 shared hits
 
 ---
 
@@ -185,12 +185,12 @@ WHERE event_time BETWEEN '2023-02-01' AND '2023-02-28';
 
 **Performance Summary:**
 
-- 📊 **Cost:** 0.00..21.25
-- ⏱️ **Execution Time:** 0.021 ms
-- 🔍 **Method:** Sequential Scan (single partition only)
-- 📋 **Efficiency:** 1 row returned, minimal filtering
-- 💾 **Buffer Usage:** 1 shared hit
-- 🚀 **Improvement:** **1,630x faster** than non-partitioned
+- **Cost:** 0.00..21.25
+- **Execution Time:** 0.021 ms
+- **Method:** Sequential Scan (single partition only)
+- **Efficiency:** 1 row returned, minimal filtering
+- **Buffer Usage:** 1 shared hit
+- **Improvement:** **1,630x faster** than non-partitioned
 
 ---
 
@@ -227,12 +227,12 @@ WHERE event_type = 'purchase';
 
 **Performance Summary:**
 
-- 📊 **Cost:** 0.00..58.19
-- ⏱️ **Execution Time:** 0.042 ms
-- 🔍 **Method:** Append (scans all partitions)
-- 📋 **Efficiency:** 0 rows returned, 1 row filtered
-- 💾 **Buffer Usage:** 1 shared hit
-- ✅ **Behavior:** Efficiently handles cross-partition queries
+- **Cost:** 0.00..58.19
+- **Execution Time:** 0.042 ms
+- **Method:** Append (scans all partitions)
+- **Efficiency:** 0 rows returned, 1 row filtered
+- **Buffer Usage:** 1 shared hit
+- **Behavior:** Efficiently handles cross-partition queries
 
 ---
 
@@ -257,24 +257,21 @@ WHERE event_type = 'purchase';
 
 ## Partitioning Strategy Analysis
 
-### 🎯 Partitioning Types & Use Cases
+### Partitioning Types & Use Cases
 
-#### 1. **Range Partitioning** ⭐⭐⭐⭐⭐
-
+#### 1. **Range Partitioning** (5/5)
 - **Best For:** Time-series data, ordered ranges
 - **Example:** Events by date/time, sales by month
 - **Benefit:** Massive pruning for range queries (1,630x improvement)
 - **Use Case:** Historical data, time-based analytics
 
-#### 2. **List Partitioning** ⭐⭐⭐⭐
-
+#### 2. **List Partitioning** (4/5)
 - **Best For:** Categorical data, known discrete values
 - **Example:** Users by region, products by category
 - **Benefit:** Direct partition targeting by category
 - **Use Case:** Geographic distribution, status-based queries
 
-#### 3. **Hash Partitioning** ⭐⭐⭐
-
+#### 3. **Hash Partitioning** (3/5)
 - **Best For:** Load distribution, parallel processing
 - **Example:** Users by ID, orders by hash
 - **Benefit:** Even data distribution across partitions
@@ -284,21 +281,21 @@ WHERE event_type = 'purchase';
 
 ## Key Performance Insights
 
-### ✅ **Partition Pruning Benefits**
+### **Partition Pruning Benefits**
 
 - **Scan Reduction:** Only relevant partitions are accessed
 - **I/O Optimization:** Dramatic reduction in buffer reads (10,838 → 1)
 - **Query Planning:** PostgreSQL automatically eliminates irrelevant partitions
 - **Performance Scale:** Improvement factor scales with dataset size
 
-### 📊 **Query Pattern Optimization**
+### **Query Pattern Optimization**
 
 - **Time-Range Queries:** Perfect fit for range partitioning
 - **Categorical Filters:** Ideal for list partitioning
 - **Cross-Partition Queries:** Manageable overhead with append operations
 - **Parallel Processing:** Each partition can be processed independently
 
-### 🚀 **Scalability Advantages**
+### **Scalability Advantages**
 
 - **Maintenance Operations:** Can target specific partitions
 - **Index Management:** Smaller indexes per partition
@@ -309,7 +306,7 @@ WHERE event_type = 'purchase';
 
 ## Production Implementation Recommendations
 
-### 📈 **When to Use Partitioning**
+### **When to Use Partitioning**
 
 | Data Size  | Query Pattern     | Partitioning Strategy | Expected Benefit      |
 | ---------- | ----------------- | --------------------- | --------------------- |
@@ -318,25 +315,25 @@ WHERE event_type = 'purchase';
 | **>10GB**  | Even distribution | Hash by ID            | 2-10x improvement     |
 | **<10GB**  | Any               | Consider carefully    | May add overhead      |
 
-### 🔧 **Implementation Guidelines**
+### **Implementation Guidelines**
 
 1. **Partition Key Selection:** Choose based on most common query patterns
 2. **Partition Size:** Target 1-10GB per partition for optimal performance
 3. **Constraint Exclusion:** Ensure enable_partition_wise_join = on
 4. **Monitoring:** Track partition pruning effectiveness
 
-### ⚠️ **Considerations**
+### **Considerations**
 
 - **Planning Overhead:** Slight increase in query planning time
 - **Cross-Partition Queries:** May require scanning multiple partitions
 - **Constraint Management:** Partition constraints must be maintained
 - **Application Changes:** May require query pattern adjustments
 
-### 🎯 **Best Practices**
+### **Best Practices**
 
 - **Start Simple:** Begin with range or list partitioning
 - **Monitor Usage:** Track partition access patterns
 - **Automate Maintenance:** Set up automated partition creation/deletion
 - **Test Thoroughly:** Validate performance with production-like queries
 
-**🏆 Conclusion:** Partitioning provides massive performance improvements for large datasets, especially time-series data. The 1,630x improvement demonstrated here shows the transformative impact of proper partitioning strategy on PostgreSQL performance.
+**Conclusion:** Partitioning provides massive performance improvements for large datasets, especially time-series data. The 1,630x improvement demonstrated here shows the transformative impact of proper partitioning strategy on PostgreSQL performance.

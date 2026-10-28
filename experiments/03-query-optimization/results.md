@@ -115,12 +115,12 @@ CREATE INDEX idx_accounts_balance_bid ON pgbench_accounts(abalance, bid);
 
 ### Key Performance Indicators
 
-| Metric               | Baseline | Target  | Current | Status        |
-| -------------------- | -------- | ------- | ------- | ------------- |
-| **Buffer Hit Ratio** | 89.2%    | >95%    | 93.1%   | ⚠️ Improving  |
-| **Avg Query Time**   | 245ms    | <100ms  | 156ms   | ⚠️ Improving  |
-| **Index Usage**      | 67%      | >80%    | 84%     | ✅ Target Met |
-| **Sequential Scans** | 245/day  | <50/day | 78/day  | ⚠️ Improving  |
+| Metric               | Baseline | Target  | Current | Status     |
+| -------------------- | -------- | ------- | ------- | ---------- |
+| **Buffer Hit Ratio** | 89.2%    | >95%    | 93.1%   | Improving  |
+| **Avg Query Time**   | 245ms    | <100ms  | 156ms   | Improving  |
+| **Index Usage**      | 67%      | >80%    | 84%     | Target Met |
+| **Sequential Scans** | 245/day  | <50/day | 78/day  | Improving  |
 
 ### Monitoring Queries Established
 
@@ -172,10 +172,10 @@ ORDER BY total_exec_time DESC;
 
 ### Performance Targets Achieved
 
-- ✅ **Query analysis framework**: Comprehensive monitoring established
-- ✅ **Bottleneck identification**: Top slow queries identified and optimized
-- ⚠️ **Buffer optimization**: 93.1% hit ratio (target: >95%)
-- ✅ **Index efficiency**: 84% index usage (target: >80%)
+- **Query analysis framework**: Comprehensive monitoring established
+- **Bottleneck identification**: Top slow queries identified and optimized
+- **Buffer optimization**: 93.1% hit ratio (target: >95%)
+- **Index efficiency**: 84% index usage (target: >80%)
 
 ## Tools and Scripts Created
 
@@ -193,4 +193,4 @@ ORDER BY total_exec_time DESC;
 3. **Buffer cache hit ratio** is a leading indicator of performance issues
 4. **Index usage patterns** reveal optimization opportunities
 
-**🎯 Result**: Established a comprehensive query optimization framework with 35% average improvement in query performance and systematic monitoring for ongoing optimization.
+**Result**: Established a comprehensive query optimization framework with 35% average improvement in query performance and systematic monitoring for ongoing optimization.

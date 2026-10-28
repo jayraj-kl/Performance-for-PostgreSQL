@@ -20,6 +20,7 @@ Analyze and optimize PostgreSQL query performance using statistical analysis and
 
 ## Files
 
+- `run.sh` - Runs this experiment end to end (also invoked by `scripts/run-all-experiments.sh`)
 - `setup.sql` - Enable performance monitoring extensions
 - `slow-query-analysis.sql` - Query performance analysis scripts
 - `explain-analysis.sql` - Execution plan examination queries

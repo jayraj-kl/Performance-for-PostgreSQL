@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use these experiments or findings in your work, please cite the paper below."
+title: "Performance for PostgreSQL"
+abstract: >-
+  Reproducible PostgreSQL scaling experiments on AWS RDS (PostgreSQL 17.4) covering
+  baseline performance, indexing, query optimization, connection pooling,
+  table partitioning and read replicas, measured with pgbench.
+type: software
+authors:
+  - family-names: Ladkat
+    given-names: Jayraj Kiran
+    affiliation: "Dr. Vishwanath Karad MIT World Peace University"
+  - family-names: Waghodekar
+    given-names: Pranati
+    affiliation: "Dr. Vishwanath Karad MIT World Peace University"
+repository-code: "https://github.com/jayraj-kl/Performance-for-PostgreSQL"
+keywords:
+  - PostgreSQL
+  - database scaling
+  - performance analysis
+  - replication
+  - data partitioning
+  - connection pooling
+  - pgbench
+preferred-citation:
+  type: generic
+  title: "PostgreSQL Scaling: Analysis of Techniques and Use Case Justification"
+  authors:
+    - family-names: Ladkat
+      given-names: Jayraj Kiran
+      affiliation: "Dr. Vishwanath Karad MIT World Peace University"
+    - family-names: Waghodekar
+      given-names: Pranati
+      affiliation: "Dr. Vishwanath Karad MIT World Peace University"
+  year: 2025
+  institution:
+    name: "Dr. Vishwanath Karad MIT World Peace University, Department of Computer Engineering and Technology"
+    city: Pune
+    country: IN
+  url: "https://github.com/jayraj-kl/Performance-for-PostgreSQL/blob/main/reports/PostgreSQL_Scaling_Final.pdf"

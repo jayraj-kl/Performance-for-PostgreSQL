@@ -1,30 +1,31 @@
 # Base Case Performance Testing
 
-**Objective:** Establish baseline PostgreSQL performance metrics  
-**Date:** June 2025  
+**Objective:** Establish baseline PostgreSQL performance metrics
+**Date:** June 2025
 **Duration:** ~45 minutes (30s setup + benchmark execution)
 
-## 🎯 Quick Results
+## Quick Results
 
 - **Baseline TPS:** 411.72 transactions/second
 - **Average Latency:** 48.577 ms
 - **Success Rate:** 100% (0 failed transactions)
 - **Recommendation:** Solid baseline for comparison
 
-## 📁 Files in this Folder
+## Files in this Folder
 
+- [`run.sh`](run.sh) - Runs this experiment end to end (also invoked by `scripts/run-all-experiments.sh`)
 - [`setup.sql`](setup.sql) - Database initialization commands
 - [`benchmark.sh`](benchmark.sh) - pgbench test execution
 - [`results.md`](results.md) - Detailed performance analysis
 - [`performance-monitoring.sql`](performance-monitoring.sql) - Statistics queries
 
-## 🔗 Quick Navigation
+## Quick Navigation
 
 - [Detailed Results](results.md)
 - [Back to Main Results](../../EXPERIMENTAL_RESULTS.md#base-case-performance)
 - [Next: Indexing Strategies](../02-indexing/)
 
-## 📊 Key Metrics at a Glance
+## Key Metrics at a Glance
 
 | Metric                  | Value      |
 | ----------------------- | ---------- |

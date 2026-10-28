@@ -2,18 +2,12 @@
 # PostgreSQL Performance Monitoring Script
 # Continuous monitoring of key performance metrics
 
-# Configuration
-export PGHOST="database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com"
-export PGPORT="5432"
-export PGUSER="postgres"
-export PGDATABASE="postgres"
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+require_cmd psql
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Monitored database (see config/defaults.env)
+export PGHOST="$PRIMARY_HOST"
+export PGDATABASE="$MONITOR_DB"
 
 # Configuration
 INTERVAL=${1:-60}  # Monitoring interval in seconds (default: 60)
@@ -27,8 +21,9 @@ echo "Started at: $(date)"
 echo
 
 # Create monitoring log
-LOG_FILE="./reports/performance_monitor_$(date +'%Y%m%d_%H%M%S').log"
-mkdir -p ./reports
+LOG_DIR="$REPO_ROOT/reports/monitoring"
+LOG_FILE="$LOG_DIR/performance_monitor_$(date +'%Y%m%d_%H%M%S').log"
+mkdir -p "$LOG_DIR"
 
 # Function to get performance metrics
 get_metrics() {

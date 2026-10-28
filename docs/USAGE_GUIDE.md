@@ -1,10 +1,10 @@
 # PostgreSQL Performance Experiments - Usage Guide
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 This comprehensive PostgreSQL performance experiment suite provides everything needed to analyze, optimize, and monitor PostgreSQL database performance. Follow this guide to get started quickly and effectively.
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### Environment Requirements
 
@@ -15,100 +15,106 @@ This comprehensive PostgreSQL performance experiment suite provides everything n
 
 ### Database Configuration
 
-Update connection parameters in scripts:
+All endpoints, database names, port and user live in one place, [`config/defaults.env`](../config/defaults.env), which holds the reference AWS RDS environment used for the published results. No script contains a hostname.
+
+To target your own servers, override only what differs:
 
 ```bash
-export PGHOST="your-database-host"
-export PGPORT="5432"
-export PGUSER="your-username"
-export PGDATABASE="your-database"
+cp config/local.env.example config/local.env   # git-ignored
+# then edit, e.g.
+#   PRIMARY_HOST=localhost
+#   PGPASSWORD=...        (or use ~/.pgpass)
 ```
 
-## 🔧 Setup Instructions
+Precedence is **shell environment > `config/local.env` > `config/defaults.env`**, so one-off overrides also work:
+
+```bash
+PRIMARY_HOST=localhost scripts/run-all-experiments.sh 01
+```
+
+| Key                | Used by                                 |
+| ------------------ | --------------------------------------- |
+| `PRIMARY_HOST`     | 01, 02, 03, 06 (writes), monitoring     |
+| `PARTITION_HOST`   | 05                                      |
+| `REPLICA_HOST`     | 06 (reads, replication lag)             |
+| `POOL_DIRECT_HOST` | 04 (direct)                             |
+| `POOL_PROXY_HOST`  | 04 (RDS Proxy)                          |
+| `BASECASE_DB`      | 01, 02, 03                              |
+| `POOL_DB`          | 04                                      |
+| `PARTITION_DB`     | 05                                      |
+| `REPLICA_DB`       | 06                                      |
+| `MONITOR_DB`       | connection check, performance monitor   |
+
+## Setup Instructions
 
 ### 1. Initial Setup
 
 ```bash
-# Clone or download the experiment suite
-cd c:\Users\Lenovo\RP-postgres\
+# Clone the experiment suite
+git clone https://github.com/jayraj-kl/Performance-for-PostgreSQL.git
+cd Performance-for-PostgreSQL
 
-# Make scripts executable (Linux/macOS)
-chmod +x scripts/*.sh experiments/*/*.sh
+# Offline checks: script syntax, experiment layout, dry run of every experiment
+scripts/validate.sh
 
 # Test database connection
 psql -h your-host -U your-user -d your-db -c "SELECT version();"
 ```
 
-### 2. Configure Environment
+### 2. Preview Commands (Dry Run)
 
 ```bash
-# Edit connection parameters in scripts
-# Update PGHOST, PGPORT, PGUSER, PGDATABASE in:
-# - scripts/run-all-experiments.sh
-# - scripts/performance-monitor.sh
-# - experiments/*/benchmark.sh
+# Print every pgbench/psql command that would run, without connecting
+DRY_RUN=1 scripts/run-all-experiments.sh
 ```
 
-## 📊 Running Experiments
+## Running Experiments
 
 ### Option 1: Run All Experiments (Recommended)
 
 ```bash
-# Execute complete experiment suite
-cd scripts/
-./run-all-experiments.sh
+# Execute complete experiment suite (works from any directory)
+scripts/run-all-experiments.sh
 
-# Results will be saved to ./reports/YYYYMMDD_HHMMSS/
+# Or only selected experiments, by number prefix
+scripts/run-all-experiments.sh 02 05
+
+# Logs and EXPERIMENT_SUMMARY.md are saved to reports/runs/YYYYMMDD_HHMMSS/
+# The script exits non-zero if any experiment failed.
 ```
 
 ### Option 2: Run Individual Experiments
 
+Every experiment has a `run.sh` that performs its steps in order:
+
+| Experiment                | `run.sh` steps                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `01-base-case`            | `benchmark.sh` (pgbench init + load test) → `performance-monitoring.sql`                             |
+| `02-indexing`             | `index-creation.sql` → `performance-tests.sql` (needs 01's data)                                     |
+| `03-query-optimization`   | `setup.sql` → `slow-query-analysis.sql` → `explain-analysis.sql` → `performance-monitoring.sql`      |
+| `04-connection-pooling`   | `benchmark-direct.sh` → `benchmark-proxy.sh`                                                         |
+| `05-partitioning`         | `table-creation.sql` → `data-generation.sql` → `performance-tests.sql`                               |
+| `06-read-replica`         | `setup.sh` → `benchmark-primary.sh` → `benchmark-replica.sh` → `replication-monitoring.sql`          |
+
 ```bash
-# Base Case Performance
-cd experiments/01-base-case/
-psql -f setup.sql
-./benchmark.sh
+experiments/05-partitioning/run.sh
 
-# Indexing Optimization
-cd experiments/02-indexing/
-psql -f index-creation.sql
-psql -f performance-tests.sql
-
-# Query Optimization
-cd experiments/03-query-optimization/
-psql -f setup.sql
-psql -f slow-query-analysis.sql
-
-# Connection Pooling
-cd experiments/04-connection-pooling/
-./benchmark-direct.sh
-./benchmark-proxy.sh
-
-# Partitioning
-cd experiments/05-partitioning/
-psql -f table-creation.sql
-psql -f performance-tests.sql
-
-# Read Replica
-cd experiments/06-read-replica/
-./setup.sh
-./benchmark-primary.sh
-# Configure replica endpoint for benchmark-replica.sh
+# Individual steps can still be run on their own
+experiments/04-connection-pooling/benchmark-proxy.sh
 ```
 
-## 📈 Monitoring and Analysis
+## Monitoring and Analysis
 
 ### Real-time Performance Monitoring
 
 ```bash
 # Start continuous monitoring (60-second intervals for 1 hour)
-cd scripts/
-./performance-monitor.sh 60 3600
+scripts/performance-monitor.sh 60 3600
 
 # Custom monitoring (30-second intervals for 30 minutes)
-./performance-monitor.sh 30 1800
+scripts/performance-monitor.sh 30 1800
 
-# Results saved to ./reports/performance_monitor_YYYYMMDD_HHMMSS.log*
+# Results saved to reports/monitoring/performance_monitor_YYYYMMDD_HHMMSS.log*
 ```
 
 ### Health Check Assessment
@@ -121,16 +127,18 @@ psql -f scripts/health-check.sql
 psql -f scripts/health-check.sql > reports/health-check-$(date +%Y%m%d).log
 ```
 
-## 📝 Understanding Results
+## Understanding Results
 
 ### Experiment Results Structure
 
-Each experiment produces:
+Each experiment folder contains:
 
-- **setup.sql**: Database initialization scripts
-- **benchmark.sh**: Performance testing automation
-- **results.md**: Detailed analysis and findings
-- **performance-monitoring.sql**: Ongoing monitoring queries
+- **README.md**: Objective, quick results and navigation
+- **run.sh**: Entry point that runs the experiment's steps in order
+- **\*.sql / \*.sh**: The individual setup, benchmark and analysis steps
+- **results.md**: Detailed analysis and findings from the published run
+
+The raw transcripts behind each `results.md` are in [`data/raw-logs/`](../data/raw-logs/).
 
 ### Key Performance Metrics
 
@@ -149,7 +157,7 @@ Each experiment produces:
 - **Partitioning**: 50-1000%+ for time-series queries
 - **Read Replicas**: 40-300% read throughput improvement
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues and Solutions
 
@@ -202,14 +210,15 @@ bash --version
 bash scripts/run-all-experiments.sh
 ```
 
-## 📊 Customization and Extension
+## Customization and Extension
 
 ### Adapting for Your Environment
 
 #### Scaling Factors
 
 ```bash
-# Modify pgbench scaling in benchmark scripts
+# Modify the SCALE / CLIENTS / THREADS / TXNS_PER_CLIENT constants at the top
+# of each benchmark script (the committed values reproduce the published results)
 # Small dataset (testing): -s 10
 # Medium dataset (development): -s 100
 # Large dataset (production simulation): -s 1000
@@ -241,21 +250,31 @@ SELECT COUNT(*) FROM your_table WHERE your_condition;
 
 ### Adding New Experiments
 
+An experiment is any `experiments/NN-name/` folder with a `README.md`, a `results.md` and a `run.sh`. `run-all-experiments.sh` picks it up automatically and `validate.sh` checks the layout.
+
 ```bash
-# Create new experiment folder
 mkdir experiments/07-your-experiment/
-
-# Copy template structure
-cp experiments/01-base-case/README.md experiments/07-your-experiment/
-# Modify README.md for your experiment
-
-# Create experiment files
-touch experiments/07-your-experiment/setup.sql
-touch experiments/07-your-experiment/benchmark.sh
+cp experiments/01-base-case/README.md experiments/07-your-experiment/   # then edit
 touch experiments/07-your-experiment/results.md
+
+cat > experiments/07-your-experiment/run.sh << 'EOF'
+#!/bin/bash
+# Experiment 07 - Your Experiment
+set -e
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$HERE/../../scripts/lib/common.sh"
+require_cmd psql pgbench
+
+run_psql "$PRIMARY_HOST" "$BASECASE_DB" -f "$HERE/setup.sql"
+run_pgbench "$PRIMARY_HOST" "$BASECASE_DB" -c 10 -j 2 -T 60
+EOF
+chmod +x experiments/07-your-experiment/run.sh
+
+# New endpoints or databases go in config/defaults.env
+scripts/validate.sh
 ```
 
-## 📈 Best Practices
+## Best Practices
 
 ### Before Running Experiments
 
@@ -279,7 +298,7 @@ touch experiments/07-your-experiment/results.md
 3. **Monitor ongoing** - Set up continuous performance monitoring
 4. **Document findings** - Update results.md with insights
 
-## 🎯 Expected Outcomes
+## Expected Outcomes
 
 ### Performance Improvements by Strategy
 
@@ -293,12 +312,12 @@ touch experiments/07-your-experiment/results.md
 
 ### Success Indicators
 
-- ✅ **Consistent improvements** across multiple test runs
-- ✅ **No performance regressions** in other areas
-- ✅ **Stable resource usage** during optimization
-- ✅ **Measurable business impact** (faster queries, better user experience)
+- **Consistent improvements** across multiple test runs
+- **No performance regressions** in other areas
+- **Stable resource usage** during optimization
+- **Measurable business impact** (faster queries, better user experience)
 
-## 📞 Support and Next Steps
+## Support and Next Steps
 
 ### Getting Help
 
@@ -325,6 +344,6 @@ touch experiments/07-your-experiment/results.md
 
 ---
 
-**🎉 You're ready to optimize PostgreSQL performance!**
+**You're ready to optimize PostgreSQL performance!**
 
 Start with the base case experiment to establish your baseline, then progressively implement optimizations based on your specific workload requirements. Remember to monitor continuously and validate improvements in your production environment.

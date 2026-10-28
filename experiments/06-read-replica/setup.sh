@@ -3,30 +3,22 @@
 # Read Replica Setup Script
 # Initializes the database for read replica performance testing
 
-# Primary database connection details
-PRIMARY_HOST="database-1.cxa0i80mysid.ap-south-1.rds.amazonaws.com"
-PRIMARY_PORT="5432"
-PRIMARY_USER="postgres"
-PRIMARY_DB="ReadReplica"
+source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib/common.sh"
+require_cmd pgbench
+
+# pgbench parameters used for the published results
+SCALE=100
 
 echo "Setting up Read Replica Performance Test Environment"
 echo "=================================================="
-echo "Primary Database: $PRIMARY_HOST:$PRIMARY_PORT/$PRIMARY_DB"
+echo "Primary Database: $PRIMARY_HOST:$PGPORT/$REPLICA_DB"
 echo ""
 
-echo "Step 1: Connecting to primary database..."
-echo "Command: psql -h $PRIMARY_HOST -p $PRIMARY_PORT -U $PRIMARY_USER -d $PRIMARY_DB"
-echo ""
-
-echo "Step 2: Initializing pgbench schema (scaling factor 100)..."
+echo "Step 1: Initializing pgbench schema (scaling factor $SCALE)..."
 echo "This will create ~10M records for testing"
 
 # Initialize the database with pgbench
-pgbench -i -s 100 \
-    -h $PRIMARY_HOST \
-    -p $PRIMARY_PORT \
-    -U $PRIMARY_USER \
-    -d $PRIMARY_DB
+run_pgbench "$PRIMARY_HOST" "$REPLICA_DB" -i -s "$SCALE"
 
 echo ""
 echo "Setup completed!"

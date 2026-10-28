@@ -8,7 +8,7 @@
 CREATE INDEX idx_accounts_aid ON pgbench_accounts (aid); -- Basic B-tree index on account ID
 ```
 
-✅ **Result:** `CREATE INDEX`
+**Result:** `CREATE INDEX`
 
 ---
 
@@ -37,12 +37,12 @@ WHERE schemaname = 'public';
 
 ### Index Utilization Summary
 
-| Table            | Index        | Scans   | Reads   | Fetches | Efficiency      |
-| ---------------- | ------------ | ------- | ------- | ------- | --------------- |
-| pgbench_branches | Primary Key  | 0       | 0       | 0       | ❌ Unused       |
-| pgbench_tellers  | Primary Key  | 200,000 | 200,149 | 200,000 | ✅ High         |
-| pgbench_accounts | Primary Key  | 400,000 | 517,791 | 400,000 | ✅ High         |
-| pgbench_accounts | Custom Index | 0       | 0       | 0       | ⚠️ Not yet used |
+| Table            | Index        | Scans   | Reads   | Fetches | Efficiency   |
+| ---------------- | ------------ | ------- | ------- | ------- | ------------ |
+| pgbench_branches | Primary Key  | 0       | 0       | 0       | Unused       |
+| pgbench_tellers  | Primary Key  | 200,000 | 200,149 | 200,000 | High         |
+| pgbench_accounts | Primary Key  | 400,000 | 517,791 | 400,000 | High         |
+| pgbench_accounts | Custom Index | 0       | 0       | 0       | Not yet used |
 
 ---
 
@@ -69,10 +69,10 @@ EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 
 **Performance Summary:**
 
-- 📊 **Cost:** 0.43..8.45
-- ⏱️ **Execution Time:** 0.058 ms
-- 🔍 **Method:** Index Scan (Primary Key)
-- ✅ **Efficiency:** Excellent
+- **Cost:** 0.43..8.45
+- **Execution Time:** 0.058 ms
+- **Method:** Index Scan (Primary Key)
+- **Efficiency:** Excellent
 
 ---
 
@@ -100,11 +100,11 @@ EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE abalance
 
 **Performance Summary:**
 
-- 📊 **Cost:** 0.00..290,851.00
-- ⏱️ **Execution Time:** 3,737.067 ms
-- 🔍 **Method:** Sequential Scan
-- ❌ **Efficiency:** Poor (needs index)
-- 💾 **Buffers:** 165,851 total (117,806 hit + 48,045 read)
+- **Cost:** 0.00..290,851.00
+- **Execution Time:** 3,737.067 ms
+- **Method:** Sequential Scan
+- **Efficiency:** Poor (needs index)
+- **Buffers:** 165,851 total (117,806 hit + 48,045 read)
 
 ---
 
@@ -129,10 +129,10 @@ EXPLAIN ANALYZE SELECT * FROM pgbench_accounts WHERE aid = 123456;
 
 **Performance Summary:**
 
-- 📊 **Cost:** 0.43..8.45
-- ⏱️ **Execution Time:** 0.039 ms
-- 🔍 **Method:** Index Scan (Custom Index)
-- 🚀 **Improvement:** 33% faster than primary key
+- **Cost:** 0.43..8.45
+- **Execution Time:** 0.039 ms
+- **Method:** Index Scan (Custom Index)
+- **Improvement:** 33% faster than primary key
 
 ---
 
@@ -162,11 +162,11 @@ EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE aid = 12
 
 **Detailed Performance:**
 
-- ⏱️ **Planning Time:** 0.146 ms
-- ⏱️ **Execution Time:** 0.030 ms
-- 💾 **Execution Buffers:** 1 hit, 3 read
-- 💾 **Planning Buffers:** 16 hit, 1 read
-- 🔌 **I/O Timing:** 0.013 ms total
+- **Planning Time:** 0.146 ms
+- **Execution Time:** 0.030 ms
+- **Execution Buffers:** 1 hit, 3 read
+- **Planning Buffers:** 16 hit, 1 read
+- **I/O Timing:** 0.013 ms total
 
 ---
 
@@ -174,31 +174,31 @@ EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE aid = 12
 
 | Query Type                | Method     | Execution Time | Cost    | Buffer Usage   | Performance Rating |
 | ------------------------- | ---------- | -------------- | ------- | -------------- | ------------------ |
-| **Point Lookup (PK)**     | Index Scan | 0.058 ms       | 8.45    | Minimal        | ⭐⭐⭐⭐⭐         |
-| **Point Lookup (Custom)** | Index Scan | 0.039 ms       | 8.45    | 4 blocks       | ⭐⭐⭐⭐⭐         |
-| **Range Scan (No Index)** | Seq Scan   | 3,737 ms       | 290,851 | 165,851 blocks | ⭐                 |
+| **Point Lookup (PK)**     | Index Scan | 0.058 ms       | 8.45    | Minimal        | 5/5                |
+| **Point Lookup (Custom)** | Index Scan | 0.039 ms       | 8.45    | 4 blocks       | 5/5                |
+| **Range Scan (No Index)** | Seq Scan   | 3,737 ms       | 290,851 | 165,851 blocks | 1/5                |
 
-## 🎯 Key Insights & Recommendations
+## Key Insights & Recommendations
 
-### ✅ Successes
+### Successes
 
 - **Custom Index Performance:** 33% improvement over primary key for point lookups
 - **Primary Key Utilization:** Heavy usage (400k+ scans) shows effective indexing
 - **Index Efficiency:** Consistent sub-millisecond performance for indexed queries
 
-### ⚠️ Optimization Opportunities
+### Optimization Opportunities
 
 - **Missing Index on abalance:** Range queries require full table scan (3.7 seconds)
 - **Unused Custom Index:** idx_accounts_aid shows 0 usage - needs query routing
 - **Buffer Efficiency:** Indexed queries use 99.998% fewer buffer reads
 
-### 📈 Performance Impact Analysis
+### Performance Impact Analysis
 
 - **Index vs Sequential Scan:** Up to 12,900% performance improvement (0.039ms vs 3,737ms)
 - **Custom vs Primary Key:** 33% improvement in execution time
 - **Buffer Usage:** Massive reduction in I/O operations with proper indexing
 
-### 🚀 Recommendations
+### Recommendations
 
 #### Immediate Actions
 
@@ -213,7 +213,7 @@ EXPLAIN (ANALYZE, BUFFERS, TIMING) SELECT * FROM pgbench_accounts WHERE aid = 12
 - **Index Maintenance:** Monitor index bloat and plan regular maintenance
 - **Query Patterns:** Analyze application queries to identify indexing opportunities
 
-### 📊 Index Design Guidelines
+### Index Design Guidelines
 
 | Scenario             | Index Type | Performance Gain   | Use Case                         |
 | -------------------- | ---------- | ------------------ | -------------------------------- |

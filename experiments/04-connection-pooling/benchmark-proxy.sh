@@ -3,25 +3,25 @@
 # Connection Pooling Test - Proxy Configuration
 # Tests performance using proxy connection pool
 
-# Database connection details - Proxy
-DB_HOST="connection-pool-proxy.proxy-cxa0i80mysid.ap-south-1.rds.amazonaws.com"
-DB_PORT="5432"
-DB_USER="postgres"
-DB_NAME="ConnectionPool"
+source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib/common.sh"
+require_cmd pgbench
 
-echo "Starting Proxy Connection Pool Performance Test..."
-echo "Target: $DB_HOST:$DB_PORT/$DB_NAME"
-echo "=========================================="
+# pgbench parameters used for the published results
+CLIENTS=100
+THREADS=20
+TXNS_PER_CLIENT=1000
+
+banner "Starting Proxy Connection Pool Performance Test..." "$POOL_PROXY_HOST:$PGPORT/$POOL_DB"
 
 echo "Configuration:"
-echo "- Clients: 100"
-echo "- Threads: 20" 
-echo "- Transactions per client: 1,000"
-echo "- Total transactions: 100,000"
+echo "- Clients: $CLIENTS"
+echo "- Threads: $THREADS"
+echo "- Transactions per client: $TXNS_PER_CLIENT"
+echo "- Total transactions: $((CLIENTS * TXNS_PER_CLIENT))"
 echo ""
 
 # Run the proxy connection pool benchmark
-pgbench -h $DB_HOST -U $DB_USER -d $DB_NAME -c 100 -j 20 -t 1000
+run_pgbench "$POOL_PROXY_HOST" "$POOL_DB" -c "$CLIENTS" -j "$THREADS" -t "$TXNS_PER_CLIENT"
 
 echo ""
 echo "Proxy connection pool test completed!"
